@@ -1,5 +1,3 @@
-import re
-
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -9,11 +7,10 @@ response = requests.get(url)
 html = response.text
 soup = BeautifulSoup(html, 'html.parser')
 
-items = soup.find("td", class_="bbr-play-score")
-jump_ball = soup.find_all('td', class_= 'center')
-#jump_ball = soup.find('a', string=re.compile("possession"))
-print(items)
-print(jump_ball)
+jump_ball_td = soup.find(lambda tag: tag.name == 'td' and "Jump ball" in tag.get_text())
+
+
+print(jump_ball_td)
 
 #for item in items:
 #    print(item.text)
