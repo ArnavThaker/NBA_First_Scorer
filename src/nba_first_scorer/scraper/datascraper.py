@@ -1,16 +1,26 @@
 import requests
-from bs4 import BeautifulSoup
 import re
+from bs4 import BeautifulSoup
+from src.nba_first_scorer.constants import constants
 
-#TODO: Find a way to construct links from the extracted href for a single team (again, starting with the Knicks). Will need to concatenate pbp to the strings and build off the base URL
-url = 'https://www.basketball-reference.com/teams/NYK/2026_games.html'
-response = requests.get(url)
+#TODO: Categorize URLs as home or away (given by string in front of .html)
+#TODO: Attempt scraping every game for a team's home games to gather the relevant players (jump ball, possession, and scorer)
+#TODO: Organize code and make it functional. Should a data scraper be a class? Probably not right?
+
+nyk_url = constants.BASE_URL + constants.TEAMS_PATH + constants.LOGOS[19] + constants.GAMES_HTML_PATH
+print(nyk_url)
+response = requests.get(nyk_url)
 response.encoding = 'UTF-8'
 html = response.text
 soup = BeautifulSoup(html, 'html.parser')
 all_box_scores = soup.find_all("td", attrs={'data-stat':'box_score_text'})
 for link in all_box_scores:
-    print(link.a['href'])
+    paths = link.a['href'].split("/")
+    paths[0] = constants.BASE_URL
+    paths.insert(2, constants.PLAY_BY_PLAY_PATH)
+    print(paths)
+    game_url = "/".join(paths)
+    print(game_url)
 
 
 
